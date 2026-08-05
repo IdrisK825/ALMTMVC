@@ -2686,3 +2686,304 @@ footer {
         background: #dc2626;
         color: var(--white);
     }
+/* ==========================================
+   EXPORT CSV BUTTON
+========================================== */
+
+.admin-export-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 18px;
+    border: 1px solid #15803d;
+    border-radius: 10px;
+    background: #ecfdf3;
+    color: #166534;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+
+    .admin-export-button:hover {
+        background: #15803d;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .admin-export-button i {
+        font-size: 15px;
+    }
+
+@media (max-width:768px) {
+
+    .admin-export-button {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   ADMIN DASHBOARD CHARTS
+========================================================= */
+
+.admin-charts-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+    gap: 26px;
+    margin-bottom: 38px;
+}
+
+.admin-chart-card {
+    padding: 30px;
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    background: var(--white);
+    box-shadow: var(--shadow-light);
+}
+
+.admin-chart-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+    .admin-chart-heading h2 {
+        margin-bottom: 9px;
+        color: var(--text-dark);
+        font-size: 25px;
+    }
+
+    .admin-chart-heading p {
+        max-width: 620px;
+        color: var(--text-grey);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+.admin-chart-total {
+    min-width: 82px;
+    padding: 14px 16px;
+    border-radius: 13px;
+    background: rgba(244, 180, 0, 0.12);
+    text-align: center;
+}
+
+    .admin-chart-total strong {
+        display: block;
+        color: var(--text-dark);
+        font-size: 28px;
+        line-height: 1;
+    }
+
+    .admin-chart-total span {
+        display: block;
+        margin-top: 6px;
+        color: var(--text-grey);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+.admin-status-chart {
+    display: grid;
+    gap: 20px;
+}
+
+.admin-chart-row {
+    display: grid;
+    gap: 9px;
+}
+
+.admin-chart-label {
+    display: grid;
+    grid-template-columns: 12px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+    .admin-chart-label strong {
+        font-size: 15px;
+    }
+
+.admin-chart-track {
+    height: 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #eef1f5;
+}
+
+.admin-chart-bar {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.6s ease;
+}
+
+.admin-chart-dot {
+    width: 11px;
+    height: 11px;
+    display: inline-block;
+    flex: 0 0 auto;
+    border-radius: 50%;
+}
+
+.chart-new {
+    background: #f4b400;
+}
+
+.chart-contacted {
+    background: #3b82f6;
+}
+
+.chart-quoted {
+    background: #8b5cf6;
+}
+
+.chart-completed {
+    background: #22c55e;
+}
+
+.chart-closed {
+    background: #6b7280;
+}
+
+.chart-spam {
+    background: #ef4444;
+}
+
+.admin-donut-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-donut-layout {
+    display: grid;
+    grid-template-columns: minmax(170px, 210px) 1fr;
+    gap: 26px;
+    align-items: center;
+    margin: auto 0 28px;
+}
+
+.admin-donut-chart {
+    position: relative;
+    width: min(100%, 210px);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    border-radius: 50%;
+}
+
+    .admin-donut-chart::after {
+        content: "";
+        position: absolute;
+        inset: 23%;
+        border-radius: 50%;
+        background: var(--white);
+        box-shadow: inset 0 0 0 1px var(--border-light);
+    }
+
+.admin-donut-centre {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+    .admin-donut-centre strong {
+        color: var(--text-dark);
+        font-size: 34px;
+        line-height: 1;
+    }
+
+    .admin-donut-centre span {
+        margin-top: 6px;
+        color: var(--text-grey);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+.admin-chart-legend {
+    display: grid;
+    gap: 12px;
+}
+
+    .admin-chart-legend div {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--text-grey);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+.admin-weekly-stat {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: auto;
+    padding: 18px;
+    border-radius: 14px;
+    background: var(--background-light);
+}
+
+.admin-weekly-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    background: rgba(244, 180, 0, 0.13);
+    color: var(--primary-gold);
+    font-size: 19px;
+}
+
+.admin-weekly-stat span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-grey);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-weekly-stat strong {
+    color: var(--text-dark);
+    font-size: 25px;
+}
+
+@media (max-width: 1050px) {
+    .admin-charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-donut-layout {
+        grid-template-columns: minmax(170px, 220px) 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-chart-card {
+        padding: 24px 20px;
+    }
+
+    .admin-chart-heading {
+        flex-direction: column;
+    }
+
+    .admin-donut-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-chart-legend {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

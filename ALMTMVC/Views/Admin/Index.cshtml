@@ -2,6 +2,48 @@
 
 @{
     ViewData["Title"] = "Admin Dashboard";
+
+    int totalForChart = Math.Max(Model.TotalEnquiries, 1);
+
+    double newPercent =
+        Model.NewEnquiries * 100d / totalForChart;
+
+    double contactedPercent =
+        Model.ContactedEnquiries * 100d / totalForChart;
+
+    double quotedPercent =
+        Model.QuotedEnquiries * 100d / totalForChart;
+
+    double completedPercent =
+        Model.CompletedEnquiries * 100d / totalForChart;
+
+    double closedPercent =
+        Model.ClosedEnquiries * 100d / totalForChart;
+
+    double spamPercent =
+        Model.SpamEnquiries * 100d / totalForChart;
+
+    double quotedStart =
+        newPercent + contactedPercent;
+
+    double completedStart =
+        quotedStart + quotedPercent;
+
+    double closedStart =
+        completedStart + completedPercent;
+
+    double spamStart =
+        closedStart + closedPercent;
+
+    string donutStyle = Model.TotalEnquiries == 0
+        ? "background: conic-gradient(#e5e7eb 0 100%);"
+        : $"background: conic-gradient(" +
+          $"#f4b400 0 {newPercent:F2}%, " +
+          $"#3b82f6 {newPercent:F2}% {quotedStart:F2}%, " +
+          $"#8b5cf6 {quotedStart:F2}% {completedStart:F2}%, " +
+          $"#22c55e {completedStart:F2}% {closedStart:F2}%, " +
+          $"#6b7280 {closedStart:F2}% {spamStart:F2}%, " +
+          $"#ef4444 {spamStart:F2}% 100%);";
 }
 
 <section class="admin-page">
@@ -32,7 +74,6 @@
                    aria-hidden="true"></i>
 
                 Sign Out
-
             </button>
 
         </form>
@@ -44,10 +85,10 @@
         <div class="admin-alert admin-alert-success"
              role="alert">
 
-            <i class="fa-solid fa-circle-check"></i>
+            <i class="fa-solid fa-circle-check"
+               aria-hidden="true"></i>
 
             @successMessage
-
         </div>
     }
 
@@ -60,7 +101,8 @@
         <article class="admin-summary-card">
 
             <div class="admin-summary-icon">
-                <i class="fa-solid fa-inbox"></i>
+                <i class="fa-solid fa-inbox"
+                   aria-hidden="true"></i>
             </div>
 
             <div>
@@ -73,7 +115,8 @@
         <article class="admin-summary-card">
 
             <div class="admin-summary-icon">
-                <i class="fa-solid fa-envelope-open-text"></i>
+                <i class="fa-solid fa-envelope-open-text"
+                   aria-hidden="true"></i>
             </div>
 
             <div>
@@ -86,7 +129,8 @@
         <article class="admin-summary-card">
 
             <div class="admin-summary-icon">
-                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-phone"
+                   aria-hidden="true"></i>
             </div>
 
             <div>
@@ -99,7 +143,8 @@
         <article class="admin-summary-card">
 
             <div class="admin-summary-icon">
-                <i class="fa-solid fa-circle-check"></i>
+                <i class="fa-solid fa-circle-check"
+                   aria-hidden="true"></i>
             </div>
 
             <div>
@@ -112,164 +157,392 @@
     </div>
 
     <!-- ==========================================
-         ENQUIRY TABLE
+         DASHBOARD CHARTS
     =========================================== -->
 
-    <div class="admin-panel-header">
+    <section class="admin-charts-grid"
+             aria-label="Enquiry statistics">
 
-        <div class="admin-panel-title">
+        <article class="admin-chart-card">
 
-            <div>
-                <h2>Customer Enquiries</h2>
+            <div class="admin-chart-heading">
 
-                <p>
-                    Showing @Model.FilteredEnquiries of
-                    @Model.TotalEnquiries enquiries.
-                </p>
+                <div>
+                    <span class="section-label">
+                        Status Overview
+                    </span>
+
+                    <h2>Enquiries by Status</h2>
+
+                    <p>
+                        Distribution of all enquiries currently stored
+                        in the database.
+                    </p>
+                </div>
+
+                <div class="admin-chart-total">
+                    <strong>@Model.TotalEnquiries</strong>
+                    <span>Total</span>
+                </div>
+
             </div>
 
-        </div>
+            <div class="admin-status-chart">
 
-        <form asp-controller="Admin"
-              asp-action="Index"
-              method="get"
-              class="admin-filter-form">
+                @foreach (var item in new[]
+                {
+                    new
+                    {
+                        Name = "New",
+                        Count = Model.NewEnquiries,
+                        Percent = newPercent,
+                        ClassName = "chart-new"
+                    },
+                    new
+                    {
+                        Name = "Contacted",
+                        Count = Model.ContactedEnquiries,
+                        Percent = contactedPercent,
+                        ClassName = "chart-contacted"
+                    },
+                    new
+                    {
+                        Name = "Quoted",
+                        Count = Model.QuotedEnquiries,
+                        Percent = quotedPercent,
+                        ClassName = "chart-quoted"
+                    },
+                    new
+                    {
+                        Name = "Completed",
+                        Count = Model.CompletedEnquiries,
+                        Percent = completedPercent,
+                        ClassName = "chart-completed"
+                    },
+                    new
+                    {
+                        Name = "Closed",
+                        Count = Model.ClosedEnquiries,
+                        Percent = closedPercent,
+                        ClassName = "chart-closed"
+                    },
+                    new
+                    {
+                        Name = "Spam",
+                        Count = Model.SpamEnquiries,
+                        Percent = spamPercent,
+                        ClassName = "chart-spam"
+                    }
+                })
+                {
+                    <div class="admin-chart-row">
 
-            <div class="admin-search-field">
+                        <div class="admin-chart-label">
 
-                <label for="searchTerm">
-                    Search enquiries
-                </label>
+                            <span class="admin-chart-dot
+                                @item.ClassName">
+                            </span>
 
-                <div class="admin-search-input">
+                            <span>@item.Name</span>
 
-                    <i class="fa-solid fa-magnifying-glass"
-                       aria-hidden="true"></i>
+                            <strong>@item.Count</strong>
 
-                    <input id="searchTerm"
-                           name="searchTerm"
-                           type="search"
-                           value="@Model.SearchTerm"
-                           placeholder="Name, email, company, phone or service" />
+                        </div>
+
+                        <div class="admin-chart-track"
+                             aria-label="@item.Name enquiries:
+                            @item.Count">
+
+                            <span class="admin-chart-bar
+                                @item.ClassName"
+                                  style="width:
+                                @item.Percent.ToString(
+                                    "F2",
+                                    System.Globalization
+                                        .CultureInfo
+                                        .InvariantCulture)%;">
+                            </span>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </article>
+
+        <article class="admin-chart-card admin-donut-card">
+
+            <div class="admin-chart-heading">
+
+                <div>
+                    <span class="section-label">
+                        Workflow Snapshot
+                    </span>
+
+                    <h2>Status Distribution</h2>
+
+                    <p>
+                        A visual summary of where enquiries sit in
+                        your workflow.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="admin-donut-layout">
+
+                <div class="admin-donut-chart"
+                     style="@donutStyle"
+                     role="img"
+                     aria-label="Enquiry status distribution">
+
+                    <div class="admin-donut-centre">
+                        <strong>@Model.TotalEnquiries</strong>
+                        <span>Enquiries</span>
+                    </div>
+
+                </div>
+
+                <div class="admin-chart-legend">
+
+                    <div>
+                        <span class="admin-chart-dot chart-new"></span>
+                        New
+                    </div>
+
+                    <div>
+                        <span class="admin-chart-dot chart-contacted"></span>
+                        Contacted
+                    </div>
+
+                    <div>
+                        <span class="admin-chart-dot chart-quoted"></span>
+                        Quoted
+                    </div>
+
+                    <div>
+                        <span class="admin-chart-dot chart-completed"></span>
+                        Completed
+                    </div>
+
+                    <div>
+                        <span class="admin-chart-dot chart-closed"></span>
+                        Closed
+                    </div>
+
+                    <div>
+                        <span class="admin-chart-dot chart-spam"></span>
+                        Spam
+                    </div>
 
                 </div>
 
             </div>
 
-            <div class="admin-status-field">
+            <div class="admin-weekly-stat">
 
-                <label for="statusFilter">
-                    Status
-                </label>
+                <div class="admin-weekly-icon">
+                    <i class="fa-solid fa-calendar-week"
+                       aria-hidden="true"></i>
+                </div>
 
-                <select id="statusFilter"
-                        name="statusFilter">
-
-                    <option value="">
-                        All statuses
-                    </option>
-
-                    <option value="New"
-                            selected="@(Model.StatusFilter == "New")">
-                        New
-                    </option>
-
-                    <option value="Contacted"
-                            selected="@(Model.StatusFilter == "Contacted")">
-                        Contacted
-                    </option>
-
-                    <option value="Quoted"
-                            selected="@(Model.StatusFilter == "Quoted")">
-                        Quoted
-                    </option>
-
-                    <option value="Completed"
-                            selected="@(Model.StatusFilter == "Completed")">
-                        Completed
-                    </option>
-
-                    <option value="Closed"
-                            selected="@(Model.StatusFilter == "Closed")">
-                        Closed
-                    </option>
-
-                    <option value="Spam"
-                            selected="@(Model.StatusFilter == "Spam")">
-                        Spam
-                    </option>
-
-                </select>
+                <div>
+                    <span>Received in the last 7 days</span>
+                    <strong>@Model.EnquiriesLast7Days</strong>
+                </div>
 
             </div>
 
-            <div class="admin-filter-actions">
+        </article>
 
-                <button type="submit"
-                        class="btn admin-filter-button">
+    </section>
 
-                    <i class="fa-solid fa-filter"
-                       aria-hidden="true"></i>
+    <!-- ==========================================
+         ENQUIRY PANEL
+    =========================================== -->
 
-                    Apply
+    <div class="admin-panel">
 
-                </button>
+        <div class="admin-panel-header">
+
+            <div class="admin-panel-title">
+
+                <div>
+                    <h2>Customer Enquiries</h2>
+
+                    <p>
+                        Showing @Model.FilteredEnquiries of
+                        @Model.TotalEnquiries enquiries.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- ==========================================
+                 SEARCH, FILTER AND EXPORT
+            =========================================== -->
+
+            <form asp-controller="Admin"
+                  asp-action="Index"
+                  method="get"
+                  class="admin-filter-form">
+
+                <div class="admin-search-field">
+
+                    <label for="searchTerm">
+                        Search enquiries
+                    </label>
+
+                    <div class="admin-search-input">
+
+                        <i class="fa-solid fa-magnifying-glass"
+                           aria-hidden="true"></i>
+
+                        <input id="searchTerm"
+                               name="searchTerm"
+                               type="search"
+                               value="@Model.SearchTerm"
+                               placeholder="Name, email, company, phone or service" />
+
+                    </div>
+
+                </div>
+
+                <div class="admin-status-field">
+
+                    <label for="statusFilter">
+                        Status
+                    </label>
+
+                    <select id="statusFilter"
+                            name="statusFilter">
+
+                        <option value="">
+                            All statuses
+                        </option>
+
+                        <option value="New"
+                                selected="@(Model.StatusFilter == "New")">
+                            New
+                        </option>
+
+                        <option value="Contacted"
+                                selected="@(Model.StatusFilter == "Contacted")">
+                            Contacted
+                        </option>
+
+                        <option value="Quoted"
+                                selected="@(Model.StatusFilter == "Quoted")">
+                            Quoted
+                        </option>
+
+                        <option value="Completed"
+                                selected="@(Model.StatusFilter == "Completed")">
+                            Completed
+                        </option>
+
+                        <option value="Closed"
+                                selected="@(Model.StatusFilter == "Closed")">
+                            Closed
+                        </option>
+
+                        <option value="Spam"
+                                selected="@(Model.StatusFilter == "Spam")">
+                            Spam
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="admin-filter-actions">
+
+                    <button type="submit"
+                            class="btn admin-filter-button">
+
+                        <i class="fa-solid fa-filter"
+                           aria-hidden="true"></i>
+
+                        Apply
+                    </button>
+
+                    <a asp-controller="Admin"
+                       asp-action="Export"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-statusFilter="@Model.StatusFilter"
+                       class="admin-export-button">
+
+                        <i class="fa-solid fa-file-export"
+                           aria-hidden="true"></i>
+
+                        Export CSV
+                    </a>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) ||
+                         !string.IsNullOrWhiteSpace(Model.StatusFilter))
+                    {
+                        <a asp-controller="Admin"
+                           asp-action="Index"
+                           class="admin-clear-button">
+
+                            <i class="fa-solid fa-xmark"
+                               aria-hidden="true"></i>
+
+                            Clear
+                        </a>
+                    }
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- ==========================================
+             EMPTY STATE
+        =========================================== -->
+        @if (Model.Enquiries.Count == 0)
+        {
+            <div class="admin-empty-state">
+
+                <i class="fa-solid fa-magnifying-glass"
+                   aria-hidden="true"></i>
 
                 @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) ||
                      !string.IsNullOrWhiteSpace(Model.StatusFilter))
                 {
+                    <h3>No matching enquiries</h3>
+
+                    <p>
+                        Try changing your search term or selected status.
+                    </p>
+
                     <a asp-controller="Admin"
                        asp-action="Index"
                        class="admin-clear-button">
 
-                        <i class="fa-solid fa-xmark"
-                           aria-hidden="true"></i>
-
-                        Clear
-
+                        Clear Filters
                     </a>
+                }
+                else
+                {
+                    <h3>No enquiries yet</h3>
+
+                    <p>
+                        New contact-form submissions will appear here.
+                    </p>
                 }
 
             </div>
-
-        </form>
-
-    </div>
-
-        @if (Model.Enquiries.Count == 0)
-{
-    <div class="admin-empty-state">
-
-        <i class="fa-solid fa-magnifying-glass"></i>
-
-        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) ||
-             !string.IsNullOrWhiteSpace(Model.StatusFilter))
-        {
-            <h3>No matching enquiries</h3>
-
-            <p>
-                Try changing your search term or selected status.
-            </p>
-
-            <a asp-controller="Admin"
-               asp-action="Index"
-               class="admin-clear-button">
-                Clear Filters
-            </a>
         }
         else
         {
-            <h3>No enquiries yet</h3>
+            <!-- ==========================================
+                 ENQUIRY TABLE
+            =========================================== -->
 
-            <p>
-                New contact-form submissions will appear here.
-            </p>
-        }
-
-    </div>
-}
-        else
-        {
             <div class="table-wrapper">
 
                 <table class="data-table admin-data-table">
@@ -309,9 +582,9 @@
                                 </td>
 
                                 <td>
-                                    @enquiry.SubmittedAtUtc
-                                    .ToLocalTime()
-                                    .ToString("dd MMM yyyy HH:mm")
+                                    @(enquiry.SubmittedAtUtc
+                                        .ToLocalTime()
+                                        .ToString("dd MMM yyyy HH:mm"))
                                 </td>
 
                                 <td>
@@ -334,19 +607,19 @@
                                            asp-route-id="@enquiry.Id"
                                            class="admin-action-button">
 
-                                            <i class="fa-solid fa-eye"></i>
+                                            <i class="fa-solid fa-eye"
+                                               aria-hidden="true"></i>
 
                                             View
-
                                         </a>
 
                                         <a href="mailto:@enquiry.Email"
                                            class="admin-action-button">
 
-                                            <i class="fa-solid fa-envelope"></i>
+                                            <i class="fa-solid fa-envelope"
+                                               aria-hidden="true"></i>
 
                                             Email
-
                                         </a>
 
                                     </div>
