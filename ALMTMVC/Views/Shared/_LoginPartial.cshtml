@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="identity-menu">
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="admin-dashboard-link">
+            Dashboard
+        </a>
+
+        <span class="identity-user">
+            Signed in as @UserManager.GetUserName(User)
+        </span>
+
+        <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl="@Url.Action("Index", "Home")"
+              method="post">
+
+            <button type="submit"
+                    class="identity-link-button">
+                Sign Out
+            </button>
+
+        </form>
+
+    </div>
+}
+else
+{
+    <div class="identity-menu">
+
+        <a asp-area="Identity"
+           asp-page="/Account/Login"
+           asp-route-returnUrl="@Url.Action("Index", "Admin")">
+            Admin Login
+        </a>
+
+    </div>
+}

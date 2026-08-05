@@ -1,0 +1,368 @@
+﻿@model ALMTMVC.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<section class="admin-page">
+
+    <div class="admin-page-header">
+
+        <div>
+            <span class="section-label">Administration</span>
+
+            <h1>Enquiry Dashboard</h1>
+
+            <p>
+                Review and manage enquiries submitted through the
+                Almighty Lift Consultants website.
+            </p>
+        </div>
+
+        <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl="@Url.Action("Index", "Home")"
+              method="post"
+              class="admin-logout-form">
+
+            <button type="submit"
+                    class="admin-secondary-button">
+
+                <i class="fa-solid fa-right-from-bracket"
+                   aria-hidden="true"></i>
+
+                Sign Out
+
+            </button>
+
+        </form>
+
+    </div>
+
+    @if (TempData["AdminSuccess"] is string successMessage)
+    {
+        <div class="admin-alert admin-alert-success"
+             role="alert">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            @successMessage
+
+        </div>
+    }
+
+    <!-- ==========================================
+         SUMMARY CARDS
+    =========================================== -->
+
+    <div class="admin-summary-grid">
+
+        <article class="admin-summary-card">
+
+            <div class="admin-summary-icon">
+                <i class="fa-solid fa-inbox"></i>
+            </div>
+
+            <div>
+                <span>Total Enquiries</span>
+                <strong>@Model.TotalEnquiries</strong>
+            </div>
+
+        </article>
+
+        <article class="admin-summary-card">
+
+            <div class="admin-summary-icon">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+
+            <div>
+                <span>New</span>
+                <strong>@Model.NewEnquiries</strong>
+            </div>
+
+        </article>
+
+        <article class="admin-summary-card">
+
+            <div class="admin-summary-icon">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+
+            <div>
+                <span>Contacted</span>
+                <strong>@Model.ContactedEnquiries</strong>
+            </div>
+
+        </article>
+
+        <article class="admin-summary-card">
+
+            <div class="admin-summary-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div>
+                <span>Completed</span>
+                <strong>@Model.CompletedEnquiries</strong>
+            </div>
+
+        </article>
+
+    </div>
+
+    <!-- ==========================================
+         ENQUIRY TABLE
+    =========================================== -->
+
+    <div class="admin-panel-header">
+
+        <div class="admin-panel-title">
+
+            <div>
+                <h2>Customer Enquiries</h2>
+
+                <p>
+                    Showing @Model.FilteredEnquiries of
+                    @Model.TotalEnquiries enquiries.
+                </p>
+            </div>
+
+        </div>
+
+        <form asp-controller="Admin"
+              asp-action="Index"
+              method="get"
+              class="admin-filter-form">
+
+            <div class="admin-search-field">
+
+                <label for="searchTerm">
+                    Search enquiries
+                </label>
+
+                <div class="admin-search-input">
+
+                    <i class="fa-solid fa-magnifying-glass"
+                       aria-hidden="true"></i>
+
+                    <input id="searchTerm"
+                           name="searchTerm"
+                           type="search"
+                           value="@Model.SearchTerm"
+                           placeholder="Name, email, company, phone or service" />
+
+                </div>
+
+            </div>
+
+            <div class="admin-status-field">
+
+                <label for="statusFilter">
+                    Status
+                </label>
+
+                <select id="statusFilter"
+                        name="statusFilter">
+
+                    <option value="">
+                        All statuses
+                    </option>
+
+                    <option value="New"
+                            selected="@(Model.StatusFilter == "New")">
+                        New
+                    </option>
+
+                    <option value="Contacted"
+                            selected="@(Model.StatusFilter == "Contacted")">
+                        Contacted
+                    </option>
+
+                    <option value="Quoted"
+                            selected="@(Model.StatusFilter == "Quoted")">
+                        Quoted
+                    </option>
+
+                    <option value="Completed"
+                            selected="@(Model.StatusFilter == "Completed")">
+                        Completed
+                    </option>
+
+                    <option value="Closed"
+                            selected="@(Model.StatusFilter == "Closed")">
+                        Closed
+                    </option>
+
+                    <option value="Spam"
+                            selected="@(Model.StatusFilter == "Spam")">
+                        Spam
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="admin-filter-actions">
+
+                <button type="submit"
+                        class="btn admin-filter-button">
+
+                    <i class="fa-solid fa-filter"
+                       aria-hidden="true"></i>
+
+                    Apply
+
+                </button>
+
+                @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) ||
+                     !string.IsNullOrWhiteSpace(Model.StatusFilter))
+                {
+                    <a asp-controller="Admin"
+                       asp-action="Index"
+                       class="admin-clear-button">
+
+                        <i class="fa-solid fa-xmark"
+                           aria-hidden="true"></i>
+
+                        Clear
+
+                    </a>
+                }
+
+            </div>
+
+        </form>
+
+    </div>
+
+        @if (Model.Enquiries.Count == 0)
+{
+    <div class="admin-empty-state">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) ||
+             !string.IsNullOrWhiteSpace(Model.StatusFilter))
+        {
+            <h3>No matching enquiries</h3>
+
+            <p>
+                Try changing your search term or selected status.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="admin-clear-button">
+                Clear Filters
+            </a>
+        }
+        else
+        {
+            <h3>No enquiries yet</h3>
+
+            <p>
+                New contact-form submissions will appear here.
+            </p>
+        }
+
+    </div>
+}
+        else
+        {
+            <div class="table-wrapper">
+
+                <table class="data-table admin-data-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Submitted</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var enquiry in Model.Enquiries)
+                        {
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+                                        @enquiry.FullName
+                                    </strong>
+
+                                    <span class="admin-table-secondary">
+                                        @enquiry.Email
+                                    </span>
+
+                                </td>
+
+                                <td>
+                                    @enquiry.ServiceRequired
+                                </td>
+
+                                <td>
+                                    @enquiry.SubmittedAtUtc
+                                    .ToLocalTime()
+                                    .ToString("dd MMM yyyy HH:mm")
+                                </td>
+
+                                <td>
+
+                                    <span class="status-badge
+                                        status-@enquiry.Status.ToLowerInvariant()">
+
+                                        @enquiry.Status
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="admin-table-actions">
+
+                                        <a asp-controller="Admin"
+                                           asp-action="Details"
+                                           asp-route-id="@enquiry.Id"
+                                           class="admin-action-button">
+
+                                            <i class="fa-solid fa-eye"></i>
+
+                                            View
+
+                                        </a>
+
+                                        <a href="mailto:@enquiry.Email"
+                                           class="admin-action-button">
+
+                                            <i class="fa-solid fa-envelope"></i>
+
+                                            Email
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </div>
+
+</section>

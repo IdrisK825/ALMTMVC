@@ -1,0 +1,237 @@
+﻿@{
+    string currentAction =
+        ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] | Almighty Lift Consultants</title>
+
+    <meta name="description"
+          content="@ViewData["Description"]" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+
+    <!-- ==========================================
+         NAVIGATION
+    =========================================== -->
+
+    <header class="site-header">
+
+        <nav class="navbar">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="logo"
+               aria-label="Almighty Lift Consultants home">
+
+                ALMT
+                <span>Lift Consultants</span>
+
+            </a>
+
+            <button class="menu-toggle"
+                    type="button"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false">
+
+                ☰
+
+            </button>
+
+            <div class="menu">
+
+                <ul>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="@(currentAction == "Index" ? "active" : "")">
+                            HOME
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="About"
+                           class="@(currentAction == "About" ? "active" : "")">
+                            ABOUT
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Services"
+                           class="@(currentAction == "Services" ? "active" : "")">
+                            SERVICES
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Projects"
+                           class="@(currentAction == "Projects" ? "active" : "")">
+                            PROJECTS
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Gallery"
+                           class="@(currentAction == "Gallery" ? "active" : "")">
+                            GALLERY
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Contact"
+                           class="@(currentAction == "Contact" ||
+                                                               currentAction == "ContactSuccess"
+                                                                   ? "active"
+                                                                   : "")">
+                            CONTACT
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <partial name="_LoginPartial" />
+
+        </nav>
+
+    </header>
+
+    <!-- ==========================================
+         PAGE CONTENT
+    =========================================== -->
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    <footer>
+
+        <div class="footer-container">
+
+            <div class="footer-column">
+
+                <h2 class="footer-logo">ALMT</h2>
+
+                <p>
+                    Professional lift installation, maintenance,
+                    repairs, modernisation and consulting services
+                    across South Africa.
+                </p>
+
+            </div>
+
+            <div class="footer-column">
+
+                <h3>Quick Links</h3>
+
+                <ul>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Index">
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="About">
+                            About
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Services">
+                            Services
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Projects">
+                            Projects
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Gallery">
+                            Gallery
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Contact">
+                            Contact
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="footer-column">
+
+                <h3>Our Services</h3>
+
+                <ul>
+                    <li>Lift Installation</li>
+                    <li>Lift Maintenance</li>
+                    <li>Lift Repairs</li>
+                    <li>Lift Modernisation</li>
+                    <li>Technical Consulting</li>
+                </ul>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <p>
+                &copy; @DateTime.Now.Year Almighty Lift Consultants.
+                All Rights Reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

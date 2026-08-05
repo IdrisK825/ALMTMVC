@@ -1,0 +1,305 @@
+﻿@model ALMTMVC.Models.ContactEnquiry
+
+@{
+    ViewData["Title"] = "Enquiry Details";
+}
+
+<section class="admin-page">
+
+    <div class="admin-details-navigation">
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="admin-back-link">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Dashboard
+
+        </a>
+
+    </div>
+
+    @if (TempData["AdminSuccess"] is string successMessage)
+    {
+        <div class="admin-alert admin-alert-success"
+             role="alert">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            @successMessage
+
+        </div>
+    }
+
+    @if (TempData["AdminError"] is string errorMessage)
+    {
+        <div class="admin-alert admin-alert-error"
+             role="alert">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            @errorMessage
+
+        </div>
+    }
+
+    <div class="admin-details-layout">
+
+        <!-- ==========================================
+             MAIN ENQUIRY DETAILS
+        =========================================== -->
+
+        <article class="admin-details-card">
+
+            <div class="admin-details-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        Enquiry #@Model.Id
+                    </span>
+
+                    <h1>@Model.FullName</h1>
+
+                    <p>
+                        Submitted
+                        @Model.SubmittedAtUtc
+                        .ToLocalTime()
+                        .ToString("dd MMMM yyyy 'at' HH:mm")
+                    </p>
+
+                </div>
+
+                <span class="status-badge
+                    status-@Model.Status.ToLowerInvariant()">
+
+                    @Model.Status
+
+                </span>
+
+            </div>
+
+            <div class="admin-details-grid">
+
+                <div class="admin-detail-item">
+
+                    <span>Email Address</span>
+
+                    <a href="mailto:@Model.Email">
+                        @Model.Email
+                    </a>
+
+                </div>
+
+                <div class="admin-detail-item">
+
+                    <span>Phone Number</span>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                    {
+                        <a href="tel:@Model.PhoneNumber">
+                            @Model.PhoneNumber
+                        </a>
+                    }
+                    else
+                    {
+                        <p>Not provided</p>
+                    }
+
+                </div>
+
+                <div class="admin-detail-item">
+
+                    <span>Company or Building</span>
+
+                    <p>
+                        @(string.IsNullOrWhiteSpace(Model.CompanyName)
+                            ? "Not provided"
+                            : Model.CompanyName)
+                    </p>
+
+                </div>
+
+                <div class="admin-detail-item">
+
+                    <span>Service Required</span>
+
+                    <p>@Model.ServiceRequired</p>
+
+                </div>
+
+                <div class="admin-detail-item admin-detail-wide">
+
+                    <span>Project Location</span>
+
+                    <p>
+                        @(string.IsNullOrWhiteSpace(Model.ProjectLocation)
+                            ? "Not provided"
+                            : Model.ProjectLocation)
+                    </p>
+
+                </div>
+
+                <div class="admin-detail-item admin-detail-wide">
+
+                    <span>Consent to Contact</span>
+
+                    <p>
+                        @(Model.ConsentToContact ? "Yes" : "No")
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="admin-message-box">
+
+                <span>Customer Message</span>
+
+                <p>@Model.Message</p>
+
+            </div>
+
+            <div class="admin-contact-actions">
+
+                <a href="mailto:@Model.Email"
+                   class="btn">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                    Email Customer
+
+                </a>
+
+                @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                {
+                    <a href="tel:@Model.PhoneNumber"
+                       class="admin-secondary-button">
+
+                        <i class="fa-solid fa-phone"></i>
+
+                        Call Customer
+
+                    </a>
+                }
+
+            </div>
+
+        </article>
+
+        <!-- ==========================================
+             MANAGEMENT SIDEBAR
+        =========================================== -->
+
+        <aside class="admin-management-card">
+
+            <h2>Manage Enquiry</h2>
+
+            <p>
+                Update the enquiry as it moves through your
+                customer-service process.
+            </p>
+
+            <form asp-controller="Admin"
+                  asp-action="UpdateStatus"
+                  method="post">
+
+                <input type="hidden"
+                       name="id"
+                       value="@Model.Id" />
+
+                <div class="form-group">
+
+                    <label for="status"
+                           class="form-label">
+                        Enquiry status
+                    </label>
+
+                    <select id="status"
+                            name="status"
+                            class="form-select">
+
+                        <option value="New"
+                                selected="@(Model.Status == "New")">
+                            New
+                        </option>
+
+                        <option value="Contacted"
+                                selected="@(Model.Status == "Contacted")">
+                            Contacted
+                        </option>
+
+                        <option value="Quoted"
+                                selected="@(Model.Status == "Quoted")">
+                            Quoted
+                        </option>
+
+                        <option value="Completed"
+                                selected="@(Model.Status == "Completed")">
+                            Completed
+                        </option>
+
+                        <option value="Closed"
+                                selected="@(Model.Status == "Closed")">
+                            Closed
+                        </option>
+
+                        <option value="Spam"
+                                selected="@(Model.Status == "Spam")">
+                            Spam
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <button type="submit"
+                        class="btn admin-full-button">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Update Status
+
+                </button>
+
+            </form>
+
+            <hr class="admin-divider" />
+
+            <div class="admin-danger-zone">
+
+                <h3>Delete Enquiry</h3>
+
+                <p>
+                    Deleting an enquiry permanently removes it from
+                    the database.
+                </p>
+
+                <form asp-controller="Admin"
+                      asp-action="Delete"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to permanently delete this enquiry?');">
+
+                    <input type="hidden"
+                           name="id"
+                           value="@Model.Id" />
+
+                    <button type="submit"
+                            class="admin-delete-button">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Delete Enquiry
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>

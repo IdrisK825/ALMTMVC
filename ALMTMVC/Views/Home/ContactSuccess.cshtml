@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Enquiry Received";
+    ViewData["Description"] =
+        "Your enquiry has been received by Almighty Lift Consultants.";
+}
+
+<section class="contact-success-page">
+
+    <div class="contact-success-card reveal">
+
+        <div class="contact-success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <span class="section-label">
+            Enquiry received
+        </span>
+
+        <h1>Thank You for Contacting Us</h1>
+
+        @if (TempData["CustomerName"] is string customerName)
+        {
+            <p>
+                Thank you, <strong>@customerName</strong>. Your enquiry
+                has passed validation successfully.
+            </p>
+        }
+        else
+        {
+            <p>
+                Your enquiry has passed validation successfully.
+            </p>
+        }
+
+        <p>
+            Once the database and email system are connected, this page
+            will confirm that your message has been saved and delivered
+            to our team.
+        </p>
+
+        <div class="contact-success-actions">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn">
+                Return Home
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Services"
+               class="contact-text-link">
+                View Our Services
+            </a>
+
+        </div>
+
+    </div>
+
+</section>

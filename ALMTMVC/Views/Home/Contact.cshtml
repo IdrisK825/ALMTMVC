@@ -1,0 +1,496 @@
+﻿@model ALMTMVC.Models.ContactEnquiryViewModel
+
+@{
+    ViewData["Title"] = "Contact Us";
+    ViewData["Description"] =
+        "Contact Almighty Lift Consultants about lift installations, maintenance, repairs, modernisation and technical consulting.";
+}
+
+<!-- ==========================================
+     PAGE BANNER
+========================================== -->
+
+<section class="page-banner">
+
+    <h1>Contact Our Team</h1>
+
+    <p>
+        Tell us about your lift, building or upcoming project.
+        Our team will review your enquiry and contact you.
+    </p>
+
+</section>
+
+<!-- ==========================================
+     CONTACT INTRODUCTION
+========================================== -->
+
+<section class="contact-intro-section">
+
+    <div class="section-heading reveal">
+
+        <span class="section-label">Get in touch</span>
+
+        <h2>How Can We Assist You?</h2>
+
+        <p>
+            Contact Almighty Lift Consultants for lift installations,
+            preventative maintenance, repairs, modernisation, technical
+            assessments and consulting.
+        </p>
+
+    </div>
+
+    <div class="contact-cards">
+
+        <article class="contact-info-card reveal">
+
+            <div class="contact-info-icon" aria-hidden="true">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+
+            <h3>Call Us</h3>
+
+            <p>
+                Speak directly with our team about your service or project
+                requirements.
+            </p>
+
+            <!-- Replace with your real company number. -->
+            <a href="tel:+27000000000">
+                +27 00 000 0000
+            </a>
+
+        </article>
+
+        <article class="contact-info-card reveal reveal-delay-1">
+
+            <div class="contact-info-icon" aria-hidden="true">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+
+            <h3>Email Us</h3>
+
+            <p>
+                Send us information about the lift, building or service
+                you require.
+            </p>
+
+            <!-- Replace with your real business email. -->
+            <a href="mailto:info@almightyliftconsultants.co.za">
+                info@almightyliftconsultants.co.za
+            </a>
+
+        </article>
+
+        <article class="contact-info-card reveal reveal-delay-2">
+
+            <div class="contact-info-icon" aria-hidden="true">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+
+            <h3>Service Area</h3>
+
+            <p>
+                Contact us to confirm availability for your building or
+                project location.
+            </p>
+
+            <span>KwaZulu-Natal, South Africa</span>
+
+        </article>
+
+        <article class="contact-info-card reveal reveal-delay-3">
+
+            <div class="contact-info-icon" aria-hidden="true">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <h3>Business Hours</h3>
+
+            <p>
+                Submit an online enquiry at any time and our team will
+                respond during business hours.
+            </p>
+
+            <span>Monday–Friday: 08:00–17:00</span>
+
+        </article>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+     CONTACT FORM
+========================================== -->
+
+<section class="contact-form-section">
+
+    <div class="contact-page-layout">
+
+        <div class="contact-form-card reveal">
+
+            <span class="section-label">Send an enquiry</span>
+
+            <h2>Tell Us What You Need</h2>
+
+            <p class="contact-form-intro">
+                Complete the form below with as much information as
+                possible. Required fields are marked with an asterisk.
+            </p>
+
+            <form asp-controller="Home"
+                  asp-action="Contact"
+                  method="post"
+                  novalidate>
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-summary-errors"
+                     role="alert">
+                </div>
+
+                <!-- Honeypot field: real users should never fill this in. -->
+                <div class="honeypot-field"
+                     aria-hidden="true">
+                    <label asp-for="Website"></label>
+                    <input asp-for="Website"
+                           tabindex="-1"
+                           autocomplete="off" />
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label asp-for="FullName"
+                               class="form-label">
+                            Full name *
+                        </label>
+
+                        <input asp-for="FullName"
+                               class="form-control"
+                               autocomplete="name"
+                               placeholder="Enter your full name" />
+
+                        <span asp-validation-for="FullName"
+                              class="field-validation-error">
+                        </span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="Email"
+                               class="form-label">
+                            Email address *
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control"
+                               autocomplete="email"
+                               placeholder="name@example.com" />
+
+                        <span asp-validation-for="Email"
+                              class="field-validation-error">
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label asp-for="PhoneNumber"
+                               class="form-label">
+                            Phone number
+                        </label>
+
+                        <input asp-for="PhoneNumber"
+                               class="form-control"
+                               autocomplete="tel"
+                               placeholder="+27 ..." />
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="field-validation-error">
+                        </span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="CompanyName"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="CompanyName"
+                               class="form-control"
+                               autocomplete="organization"
+                               placeholder="Optional" />
+
+                        <span asp-validation-for="CompanyName"
+                              class="field-validation-error">
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label asp-for="ServiceRequired"
+                               class="form-label">
+                            Service required *
+                        </label>
+
+                        <select asp-for="ServiceRequired"
+                                class="form-select">
+
+                            <option value="">
+                                Select a service
+                            </option>
+
+                            <option value="Lift Installation">
+                                Lift Installation
+                            </option>
+
+                            <option value="Preventative Maintenance">
+                                Preventative Maintenance
+                            </option>
+
+                            <option value="Lift Repairs">
+                                Lift Repairs
+                            </option>
+
+                            <option value="Lift Modernisation">
+                                Lift Modernisation
+                            </option>
+
+                            <option value="Inspection or Assessment">
+                                Inspection or Assessment
+                            </option>
+
+                            <option value="Technical Consulting">
+                                Technical Consulting
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="ServiceRequired"
+                              class="field-validation-error">
+                        </span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="ProjectLocation"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="ProjectLocation"
+                               class="form-control"
+                               autocomplete="street-address"
+                               placeholder="Suburb, town or building location" />
+
+                        <span asp-validation-for="ProjectLocation"
+                              class="field-validation-error">
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label asp-for="Message"
+                           class="form-label">
+                        How can we assist? *
+                    </label>
+
+                    <textarea asp-for="Message"
+                              class="form-control"
+                              rows="7"
+                              placeholder="Describe the lift, problem, building or project requirements.">
+                    </textarea>
+
+                    <span asp-validation-for="Message"
+                          class="field-validation-error">
+                    </span>
+
+                </div>
+
+                <div class="form-group form-consent">
+
+                    <input asp-for="ConsentToContact"
+                           class="form-check-input" />
+
+                    <div>
+                        <label asp-for="ConsentToContact"
+                               class="form-check-label">
+                        </label>
+
+                        <span asp-validation-for="ConsentToContact"
+                              class="field-validation-error">
+                        </span>
+                    </div>
+
+                </div>
+
+                <button type="submit"
+                        class="btn contact-submit-button">
+
+                    <i class="fa-solid fa-paper-plane"
+                       aria-hidden="true"></i>
+
+                    Send Enquiry
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <aside class="contact-sidebar reveal reveal-delay-1">
+
+            <div class="contact-sidebar-content">
+
+                <span class="section-label">
+                    Before submitting
+                </span>
+
+                <h2>Information That Helps Us Respond</h2>
+
+                <p>
+                    Providing clear information helps our team understand
+                    your requirements before contacting you.
+                </p>
+
+                <ul>
+
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        Building or property name
+                    </li>
+
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        Building location
+                    </li>
+
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        Type of lift or equipment
+                    </li>
+
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        Description of the fault or project
+                    </li>
+
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        Preferred contact method
+                    </li>
+
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        Suitable time for us to contact you
+                    </li>
+
+                </ul>
+
+                <div class="contact-notice">
+
+                    <i class="fa-solid fa-circle-info"
+                       aria-hidden="true"></i>
+
+                    <p>
+                        Do not use the website form for situations involving
+                        immediate danger. Follow the building’s emergency
+                        procedures and contact the appropriate emergency
+                        services.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+     FREQUENTLY ASKED QUESTIONS
+========================================== -->
+
+<section class="contact-faq-section">
+
+    <div class="section-heading reveal">
+
+        <span class="section-label">
+            Frequently asked questions
+        </span>
+
+        <h2>Before You Contact Us</h2>
+
+        <p>
+            Some common questions about enquiries and lift services.
+        </p>
+
+    </div>
+
+    <div class="contact-faq-grid">
+
+        <article class="contact-faq-item reveal">
+
+            <h3>Can I request a quotation online?</h3>
+
+            <p>
+                Yes. Select the relevant service and provide as much
+                project information as possible. A site assessment may be
+                required before a formal quotation can be prepared.
+            </p>
+
+        </article>
+
+        <article class="contact-faq-item reveal reveal-delay-1">
+
+            <h3>What information should I include?</h3>
+
+            <p>
+                Include the property location, type of lift, current
+                problem or required service, and your preferred contact
+                information.
+            </p>
+
+        </article>
+
+        <article class="contact-faq-item reveal reveal-delay-2">
+
+            <h3>Do you support different types of buildings?</h3>
+
+            <p>
+                Enquiries may be submitted for residential, commercial and
+                industrial properties. Availability depends on the location
+                and project requirements.
+            </p>
+
+        </article>
+
+    </div>
+
+</section>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
