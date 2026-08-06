@@ -12,7 +12,8 @@
            asp-action="Index"
            class="admin-back-link">
 
-            <i class="fa-solid fa-arrow-left"></i>
+            <i class="fa-solid fa-arrow-left"
+               aria-hidden="true"></i>
 
             Back to Dashboard
 
@@ -25,7 +26,8 @@
         <div class="admin-alert admin-alert-success"
              role="alert">
 
-            <i class="fa-solid fa-circle-check"></i>
+            <i class="fa-solid fa-circle-check"
+               aria-hidden="true"></i>
 
             @successMessage
 
@@ -37,7 +39,8 @@
         <div class="admin-alert admin-alert-error"
              role="alert">
 
-            <i class="fa-solid fa-triangle-exclamation"></i>
+            <i class="fa-solid fa-triangle-exclamation"
+               aria-hidden="true"></i>
 
             @errorMessage
 
@@ -64,9 +67,10 @@
 
                     <p>
                         Submitted
-                        @Model.SubmittedAtUtc
-                        .ToLocalTime()
-                        .ToString("dd MMMM yyyy 'at' HH:mm")
+                        @(Model.SubmittedAtUtc
+                            .ToLocalTime()
+                            .ToString(
+                                "dd MMMM yyyy 'at' HH:mm"))
                     </p>
 
                 </div>
@@ -96,7 +100,8 @@
 
                     <span>Phone Number</span>
 
-                    @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                    @if (!string.IsNullOrWhiteSpace(
+                        Model.PhoneNumber))
                     {
                         <a href="tel:@Model.PhoneNumber">
                             @Model.PhoneNumber
@@ -114,9 +119,10 @@
                     <span>Company or Building</span>
 
                     <p>
-                        @(string.IsNullOrWhiteSpace(Model.CompanyName)
-                            ? "Not provided"
-                            : Model.CompanyName)
+                        @(string.IsNullOrWhiteSpace(
+                            Model.CompanyName)
+                                ? "Not provided"
+                                : Model.CompanyName)
                     </p>
 
                 </div>
@@ -134,9 +140,10 @@
                     <span>Project Location</span>
 
                     <p>
-                        @(string.IsNullOrWhiteSpace(Model.ProjectLocation)
-                            ? "Not provided"
-                            : Model.ProjectLocation)
+                        @(string.IsNullOrWhiteSpace(
+                            Model.ProjectLocation)
+                                ? "Not provided"
+                                : Model.ProjectLocation)
                     </p>
 
                 </div>
@@ -163,21 +170,36 @@
 
             <div class="admin-contact-actions">
 
-                <a href="mailto:@Model.Email"
+                <a asp-controller="Admin"
+                   asp-action="Reply"
+                   asp-route-id="@Model.Id"
                    class="btn">
 
-                    <i class="fa-solid fa-envelope"></i>
+                    <i class="fa-solid fa-reply"
+                       aria-hidden="true"></i>
 
-                    Email Customer
+                    Reply to Customer
 
                 </a>
 
-                @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                <a href="mailto:@Model.Email"
+                   class="admin-secondary-button">
+
+                    <i class="fa-solid fa-envelope"
+                       aria-hidden="true"></i>
+
+                    Open Email App
+
+                </a>
+
+                @if (!string.IsNullOrWhiteSpace(
+                    Model.PhoneNumber))
                 {
                     <a href="tel:@Model.PhoneNumber"
                        class="admin-secondary-button">
 
-                        <i class="fa-solid fa-phone"></i>
+                        <i class="fa-solid fa-phone"
+                           aria-hidden="true"></i>
 
                         Call Customer
 
@@ -185,6 +207,129 @@
                 }
 
             </div>
+
+            <!-- ==========================================
+                 ACTIVITY TIMELINE
+            =========================================== -->
+
+            <section class="admin-timeline-section">
+
+                <div class="admin-timeline-heading">
+
+                    <div>
+                        <span class="section-label">
+                            Activity History
+                        </span>
+
+                        <h2>Enquiry Timeline</h2>
+
+                        <p>
+                            Replies and status updates connected to
+                            this enquiry.
+                        </p>
+                    </div>
+
+                    <span class="admin-timeline-count">
+                        @Model.Activities.Count
+                        @(Model.Activities.Count == 1
+                            ? "activity"
+                            : "activities")
+                    </span>
+
+                </div>
+
+                @if (Model.Activities.Count == 0)
+                {
+                    <div class="admin-timeline-empty">
+
+                        <i class="fa-solid fa-clock-rotate-left"
+                           aria-hidden="true"></i>
+
+                        <h3>No activity recorded yet</h3>
+
+                        <p>
+                            Replies and status changes will appear
+                            here automatically.
+                        </p>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="admin-timeline">
+
+                        @foreach (var activity in Model.Activities)
+                        {
+                            string iconClass =
+                                activity.ActivityType switch
+                                {
+                                    "ReplySent" =>
+                                        "fa-solid fa-paper-plane",
+
+                                    "StatusChanged" =>
+                                        "fa-solid fa-arrows-rotate",
+
+                                    _ =>
+                                        "fa-solid fa-circle-info"
+                                };
+
+                            string timelineClass =
+                                activity.ActivityType switch
+                                {
+                                    "ReplySent" =>
+                                        "timeline-reply",
+
+                                    "StatusChanged" =>
+                                        "timeline-status",
+
+                                    _ =>
+                                        "timeline-default"
+                                };
+
+                            <article class="admin-timeline-item
+                                @timelineClass">
+
+                                <div class="admin-timeline-marker">
+
+                                    <i class="@iconClass"
+                                       aria-hidden="true"></i>
+
+                                </div>
+
+                                <div class="admin-timeline-content">
+
+                                    <div class="admin-timeline-meta">
+
+                                        <h3>@activity.Title</h3>
+
+                                        <time datetime="@activity.CreatedAtUtc.ToString("O")">
+
+                                            @(activity.CreatedAtUtc
+                                                .ToLocalTime()
+                                                .ToString(
+                                                    "dd MMM yyyy 'at' HH:mm"))
+
+                                        </time>
+
+                                    </div>
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                        activity.Description))
+                                    {
+                                        <div class="admin-timeline-description">
+                                            @activity.Description
+                                        </div>
+                                    }
+
+                                </div>
+
+                            </article>
+                        }
+
+                    </div>
+                }
+
+            </section>
 
         </article>
 
@@ -204,6 +349,8 @@
             <form asp-controller="Admin"
                   asp-action="UpdateStatus"
                   method="post">
+
+                @Html.AntiForgeryToken()
 
                 <input type="hidden"
                        name="id"
@@ -257,7 +404,8 @@
                 <button type="submit"
                         class="btn admin-full-button">
 
-                    <i class="fa-solid fa-floppy-disk"></i>
+                    <i class="fa-solid fa-floppy-disk"
+                       aria-hidden="true"></i>
 
                     Update Status
 
@@ -272,14 +420,17 @@
                 <h3>Delete Enquiry</h3>
 
                 <p>
-                    Deleting an enquiry permanently removes it from
-                    the database.
+                    Deleting an enquiry permanently removes it and
+                    its activity history from the database.
                 </p>
 
                 <form asp-controller="Admin"
                       asp-action="Delete"
                       method="post"
-                      onsubmit="return confirm('Are you sure you want to permanently delete this enquiry?');">
+                      onsubmit="return confirm(
+                    'Are you sure you want to permanently delete this enquiry?');">
+
+                    @Html.AntiForgeryToken()
 
                     <input type="hidden"
                            name="id"
@@ -288,7 +439,8 @@
                     <button type="submit"
                             class="admin-delete-button">
 
-                        <i class="fa-solid fa-trash"></i>
+                        <i class="fa-solid fa-trash"
+                           aria-hidden="true"></i>
 
                         Delete Enquiry
 

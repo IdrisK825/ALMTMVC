@@ -2987,3 +2987,285 @@ footer {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+/* =========================================================
+   ADMIN REPLY FORM
+========================================================= */
+
+.admin-reply-form {
+    width: 100%;
+}
+
+.admin-reply-textarea {
+    min-height: 320px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   ENQUIRY ACTIVITY TIMELINE
+========================================================= */
+
+.admin-timeline-section {
+    margin-top: 42px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border-light);
+}
+
+.admin-timeline-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+    .admin-timeline-heading h2 {
+        margin-bottom: 9px;
+        color: var(--text-dark);
+        font-size: 27px;
+    }
+
+    .admin-timeline-heading p {
+        color: var(--text-grey);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+.admin-timeline-count {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: rgba(244, 180, 0, 0.13);
+    color: #8a6500;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.admin-timeline-empty {
+    padding: 38px 26px;
+    border: 1px dashed #cfd4dc;
+    border-radius: 16px;
+    background: var(--background-light);
+    text-align: center;
+}
+
+    .admin-timeline-empty i {
+        margin-bottom: 16px;
+        color: var(--primary-gold);
+        font-size: 30px;
+    }
+
+    .admin-timeline-empty h3 {
+        margin-bottom: 8px;
+        color: var(--text-dark);
+        font-size: 20px;
+    }
+
+    .admin-timeline-empty p {
+        color: var(--text-grey);
+        line-height: 1.7;
+    }
+
+.admin-timeline {
+    position: relative;
+    display: grid;
+    gap: 22px;
+}
+
+    .admin-timeline::before {
+        content: "";
+        position: absolute;
+        top: 22px;
+        bottom: 22px;
+        left: 23px;
+        width: 2px;
+        background: var(--border-light);
+    }
+
+.admin-timeline-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 18px;
+}
+
+.admin-timeline-marker {
+    position: relative;
+    z-index: 1;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid var(--white);
+    border-radius: 50%;
+    background: var(--dark-light);
+    color: var(--white);
+    box-shadow: 0 0 0 1px var(--border-light);
+}
+
+.timeline-reply .admin-timeline-marker {
+    background: #2563eb;
+}
+
+.timeline-status .admin-timeline-marker {
+    background: var(--primary-gold);
+    color: #111111;
+}
+
+.timeline-default .admin-timeline-marker {
+    background: #6b7280;
+}
+
+.admin-timeline-content {
+    min-width: 0;
+    padding: 20px 22px;
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+}
+
+.admin-timeline-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 12px;
+}
+
+    .admin-timeline-meta h3 {
+        color: var(--text-dark);
+        font-size: 18px;
+        line-height: 1.4;
+    }
+
+    .admin-timeline-meta time {
+        flex: 0 0 auto;
+        color: var(--text-grey);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+.admin-timeline-description {
+    color: var(--text-grey);
+    font-size: 14px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   ADMIN PAGINATION
+========================================================= */
+
+.admin-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 30px;
+    border-top: 1px solid var(--border-light);
+    background: var(--white);
+}
+
+.admin-pagination-summary {
+    color: var(--text-grey);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.admin-pagination-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin-page-link,
+.admin-page-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    padding: 9px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background: var(--white);
+    color: var(--text-dark);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.admin-page-number {
+    min-width: 42px;
+    padding-inline: 10px;
+}
+
+    .admin-page-link:hover,
+    .admin-page-number:hover,
+    .admin-page-number.active {
+        border-color: var(--primary-gold);
+        background: var(--primary-gold);
+        color: #111111;
+    }
+
+.admin-page-link.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.admin-page-ellipsis {
+    padding: 0 4px;
+    color: var(--text-grey);
+    font-weight: 800;
+}
+
+@media (max-width: 768px) {
+    .admin-timeline-heading,
+    .admin-timeline-meta {
+        flex-direction: column;
+    }
+
+    .admin-timeline-meta {
+        gap: 7px;
+    }
+
+    .admin-pagination {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 22px 18px;
+    }
+
+    .admin-pagination-summary {
+        text-align: center;
+    }
+
+    .admin-pagination-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 520px) {
+    .admin-timeline::before {
+        left: 19px;
+    }
+
+    .admin-timeline-item {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 13px;
+    }
+
+    .admin-timeline-marker {
+        width: 40px;
+        height: 40px;
+        border-width: 4px;
+        font-size: 13px;
+    }
+
+    .admin-timeline-content {
+        padding: 18px;
+    }
+}

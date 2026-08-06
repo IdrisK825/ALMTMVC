@@ -39,4 +39,7 @@ public class ContactEnquiry
     [Required]
     [StringLength(30)]
     public string Status { get; set; } = "New";
+
+    public ICollection<EnquiryActivity> Activities { get; set; }
+        = new List<EnquiryActivity>();
 }

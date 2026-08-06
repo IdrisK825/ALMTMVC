@@ -9,4 +9,9 @@ public interface IEmailService
 
     Task SendCustomerConfirmationAsync(
         ContactEnquiry enquiry);
+
+    Task SendAdminReplyAsync(
+        ContactEnquiry enquiry,
+        string subject,
+        string message);
 }

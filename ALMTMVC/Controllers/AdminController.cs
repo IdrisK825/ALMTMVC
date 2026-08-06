@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using ALMTMVC.Data;
 using ALMTMVC.Models;
+using ALMTMVC.Services;
 using ALMTMVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,17 @@ public class AdminController : Controller
     };
 
     private readonly ApplicationDbContext _context;
+    private readonly IEmailService _emailService;
+    private readonly ILogger<AdminController> _logger;
 
-    public AdminController(ApplicationDbContext context)
+    public AdminController(
+        ApplicationDbContext context,
+        IEmailService emailService,
+        ILogger<AdminController> logger)
     {
         _context = context;
+        _emailService = emailService;
+        _logger = logger;
     }
 
     // ==========================================
@@ -175,11 +183,35 @@ public class AdminController : Controller
     }
 
     // ==========================================
-    // ENQUIRY DETAILS
+    // ENQUIRY DETAILS AND TIMELINE
     // ==========================================
 
     [HttpGet]
     public async Task<IActionResult> Details(int id)
+    {
+        var enquiry = await _context.ContactEnquiries
+            .AsNoTracking()
+            .Include(enquiry => enquiry.Activities)
+            .FirstOrDefaultAsync(enquiry => enquiry.Id == id);
+
+        if (enquiry is null)
+        {
+            return NotFound();
+        }
+
+        enquiry.Activities = enquiry.Activities
+            .OrderByDescending(activity => activity.CreatedAtUtc)
+            .ToList();
+
+        return View(enquiry);
+    }
+
+    // ==========================================
+    // REPLY TO CUSTOMER
+    // ==========================================
+
+    [HttpGet]
+    public async Task<IActionResult> Reply(int id)
     {
         var enquiry = await _context.ContactEnquiries
             .AsNoTracking()
@@ -190,7 +222,117 @@ public class AdminController : Controller
             return NotFound();
         }
 
-        return View(enquiry);
+        var viewModel = new ReplyEnquiryViewModel
+        {
+            EnquiryId = enquiry.Id,
+            CustomerName = enquiry.FullName,
+            CustomerEmail = enquiry.Email,
+            ServiceRequired = enquiry.ServiceRequired,
+
+            Subject =
+                $"Regarding your {enquiry.ServiceRequired} enquiry",
+
+            Message = $"""
+                Hi {enquiry.FullName},
+
+                Thank you for contacting Almighty Lift Consultants regarding your {enquiry.ServiceRequired} enquiry.
+
+                We have reviewed your request and would be happy to assist you.
+
+                Kind regards,
+                Almighty Lift Consultants
+                """
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Reply(
+        ReplyEnquiryViewModel model)
+    {
+        var enquiry = await _context.ContactEnquiries
+            .FirstOrDefaultAsync(
+                enquiry => enquiry.Id == model.EnquiryId);
+
+        if (enquiry is null)
+        {
+            return NotFound();
+        }
+
+        model.CustomerName = enquiry.FullName;
+        model.CustomerEmail = enquiry.Email;
+        model.ServiceRequired = enquiry.ServiceRequired;
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        try
+        {
+            await _emailService.SendAdminReplyAsync(
+                enquiry,
+                model.Subject,
+                model.Message);
+
+            string previousStatus = enquiry.Status;
+
+            if (enquiry.Status == "New")
+            {
+                enquiry.Status = "Contacted";
+            }
+
+            var replyActivity = new EnquiryActivity
+            {
+                ContactEnquiryId = enquiry.Id,
+                ActivityType = "ReplySent",
+                Title = "Reply sent to customer",
+                Description =
+                    $"Subject: {model.Subject}\n\n{model.Message}",
+                CreatedAtUtc = DateTime.UtcNow
+            };
+
+            _context.EnquiryActivities.Add(replyActivity);
+
+            if (previousStatus != enquiry.Status)
+            {
+                var statusActivity = new EnquiryActivity
+                {
+                    ContactEnquiryId = enquiry.Id,
+                    ActivityType = "StatusChanged",
+                    Title = "Enquiry status changed",
+                    Description =
+                        $"{previousStatus} → {enquiry.Status}",
+                    CreatedAtUtc = DateTime.UtcNow
+                };
+
+                _context.EnquiryActivities.Add(statusActivity);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["AdminSuccess"] =
+                $"Your reply was sent successfully to {enquiry.Email}.";
+
+            return RedirectToAction(
+                nameof(Details),
+                new { id = enquiry.Id });
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(
+                exception,
+                "Admin reply failed for enquiry {EnquiryId}.",
+                enquiry.Id);
+
+            ModelState.AddModelError(
+                string.Empty,
+                "The reply could not be sent. Please check the email configuration and try again.");
+
+            return View(model);
+        }
     }
 
     // ==========================================
@@ -221,7 +363,30 @@ public class AdminController : Controller
             return NotFound();
         }
 
+        string previousStatus = enquiry.Status;
+
+        if (previousStatus == status)
+        {
+            TempData["AdminSuccess"] =
+                "The enquiry status is already set to that value.";
+
+            return RedirectToAction(
+                nameof(Details),
+                new { id });
+        }
+
         enquiry.Status = status;
+
+        var activity = new EnquiryActivity
+        {
+            ContactEnquiryId = enquiry.Id,
+            ActivityType = "StatusChanged",
+            Title = "Enquiry status changed",
+            Description = $"{previousStatus} → {status}",
+            CreatedAtUtc = DateTime.UtcNow
+        };
+
+        _context.EnquiryActivities.Add(activity);
 
         await _context.SaveChangesAsync();
 

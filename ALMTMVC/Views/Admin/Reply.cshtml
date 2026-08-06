@@ -1,0 +1,182 @@
+﻿@model ALMTMVC.ViewModels.ReplyEnquiryViewModel
+
+@{
+    ViewData["Title"] = "Reply to Customer";
+}
+
+<section class="admin-page">
+
+    <div class="admin-page-header">
+
+        <div>
+            <span class="section-label">Administration</span>
+
+            <h1>Reply to Customer</h1>
+
+            <p>
+                Send a direct email response to the customer enquiry.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Details"
+           asp-route-id="@Model.EnquiryId"
+           class="admin-secondary-button">
+
+            <i class="fa-solid fa-arrow-left"
+               aria-hidden="true"></i>
+
+            Back to Enquiry
+        </a>
+
+    </div>
+
+    <div class="admin-details-layout">
+
+        <article class="admin-details-card">
+
+            <div class="admin-details-heading">
+
+                <div>
+                    <span class="section-label">
+                        Customer Details
+                    </span>
+
+                    <h2>@Model.CustomerName</h2>
+                </div>
+
+            </div>
+
+            <div class="admin-details-grid">
+
+                <div class="admin-detail-item">
+
+                    <span>Email</span>
+
+                    <strong>
+                        <a href="mailto:@Model.CustomerEmail">
+                            @Model.CustomerEmail
+                        </a>
+                    </strong>
+
+                </div>
+
+                <div class="admin-detail-item">
+
+                    <span>Service</span>
+
+                    <strong>
+                        @Model.ServiceRequired
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        <article class="admin-management-card">
+
+            <div class="admin-details-heading">
+
+                <div>
+                    <span class="section-label">
+                        Email Reply
+                    </span>
+
+                    <h2>Compose Message</h2>
+                </div>
+
+            </div>
+
+            <form asp-controller="Admin"
+                  asp-action="Reply"
+                  method="post"
+                  class="admin-reply-form">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="EnquiryId"
+                       type="hidden" />
+
+                <input asp-for="CustomerName"
+                       type="hidden" />
+
+                <input asp-for="CustomerEmail"
+                       type="hidden" />
+
+                <input asp-for="ServiceRequired"
+                       type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-summary-errors"
+                     role="alert">
+                </div>
+
+                <div class="form-group">
+
+                    <label asp-for="Subject"
+                           class="form-label">
+                        Subject
+                    </label>
+
+                    <input asp-for="Subject"
+                           class="form-control"
+                           autocomplete="off" />
+
+                    <span asp-validation-for="Subject"
+                          class="field-validation-error">
+                    </span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label asp-for="Message"
+                           class="form-label">
+                        Message
+                    </label>
+
+                    <textarea asp-for="Message"
+                              class="form-control admin-reply-textarea"
+                              rows="14">
+                    </textarea>
+
+                    <span asp-validation-for="Message"
+                          class="field-validation-error">
+                    </span>
+
+                </div>
+
+                <div class="admin-contact-actions">
+
+                    <button type="submit"
+                            class="btn">
+
+                        <i class="fa-solid fa-paper-plane"
+                           aria-hidden="true"></i>
+
+                        Send Reply
+                    </button>
+
+                    <a asp-controller="Admin"
+                       asp-action="Details"
+                       asp-route-id="@Model.EnquiryId"
+                       class="admin-secondary-button">
+
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </article>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

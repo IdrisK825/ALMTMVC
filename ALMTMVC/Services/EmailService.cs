@@ -36,12 +36,16 @@ public class EmailService : IEmailService
             <table style="border-collapse: collapse; width: 100%;">
                 <tr>
                     <td style="padding: 8px; font-weight: bold;">Name</td>
-                    <td style="padding: 8px;">{Encode(enquiry.FullName)}</td>
+                    <td style="padding: 8px;">
+                        {Encode(enquiry.FullName)}
+                    </td>
                 </tr>
 
                 <tr>
                     <td style="padding: 8px; font-weight: bold;">Email</td>
-                    <td style="padding: 8px;">{Encode(enquiry.Email)}</td>
+                    <td style="padding: 8px;">
+                        {Encode(enquiry.Email)}
+                    </td>
                 </tr>
 
                 <tr>
@@ -68,14 +72,18 @@ public class EmailService : IEmailService
                 </tr>
 
                 <tr>
-                    <td style="padding: 8px; font-weight: bold;">Location</td>
+                    <td style="padding: 8px; font-weight: bold;">
+                        Location
+                    </td>
                     <td style="padding: 8px;">
                         {Encode(enquiry.ProjectLocation ?? "Not provided")}
                     </td>
                 </tr>
 
                 <tr>
-                    <td style="padding: 8px; font-weight: bold;">Message</td>
+                    <td style="padding: 8px; font-weight: bold;">
+                        Message
+                    </td>
                     <td style="padding: 8px;">
                         {Encode(enquiry.Message)}
                     </td>
@@ -86,8 +94,8 @@ public class EmailService : IEmailService
                         Submitted
                     </td>
                     <td style="padding: 8px;">
-                        {enquiry.SubmittedAtUtc.ToLocalTime():dd MMM yyyy HH:mm}
-                    </td>
+                {enquiry.SubmittedAtUtc.ToLocalTime():dd MMM yyyy HH:mm}
+            </td>
                 </tr>
             </table>
             """;
@@ -136,6 +144,46 @@ public class EmailService : IEmailService
             enquiry.Email,
             subject,
             body);
+    }
+
+    public async Task SendAdminReplyAsync(
+        ContactEnquiry enquiry,
+        string subject,
+        string message)
+    {
+        string safeSubject = subject.Trim();
+        string safeMessage = Encode(message)
+            .Replace("\r\n", "<br />")
+            .Replace("\n", "<br />");
+
+        string body = $"""
+            <h2>Almighty Lift Consultants</h2>
+
+            <p>Dear {Encode(enquiry.FullName)},</p>
+
+            <p>
+                {safeMessage}
+            </p>
+
+            <hr style="margin: 28px 0; border: 0;
+                       border-top: 1px solid #e5e7eb;" />
+
+            <p style="color: #666666; font-size: 14px;">
+                This reply relates to your enquiry regarding
+                <strong>{Encode(enquiry.ServiceRequired)}</strong>.
+            </p>
+
+            <p>
+                Kind regards,<br />
+                <strong>Almighty Lift Consultants</strong>
+            </p>
+            """;
+
+        await SendEmailAsync(
+            enquiry.Email,
+            safeSubject,
+            body,
+            _settings.CompanyNotificationEmail);
     }
 
     private async Task SendEmailAsync(
